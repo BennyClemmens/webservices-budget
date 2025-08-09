@@ -164,3 +164,27 @@ $ yarn add --dev @types/koa
 ➤ YN0000: └ Completed
 ➤ YN0000: · Done in 1s 226ms
 ```
+
+```bash
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn tsc --init
+
+Created a new tsconfig.json
+                                                                                                                     TS
+You can learn more at https://aka.ms/tsconfig
+```
+
+Took the version from the course ...
+
+Add a build alias in yarn for tsc
+
+```bash
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn build
+```
+
+Add watch functionallity and refactoring
+
+## Debugging
+
+Added a debugger (in package.json)
