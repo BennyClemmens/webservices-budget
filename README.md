@@ -123,3 +123,11 @@ $ yarn add koa
 ```
 
 Configured package.json, .gitignore and made a firsdt index.js
+
+## Middlewares
+
+Note: yarn install did an auto refactoring of package.json
+
+To understand middelwares: understand Promises
+
+
