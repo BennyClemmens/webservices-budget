@@ -130,4 +130,37 @@ Note: yarn install did an auto refactoring of package.json
 
 To understand middelwares: understand Promises
 
+## Typescript
 
+```bash
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn add --dev typescript tsx @types/node
+➤ YN0000: · Yarn 4.9.2
+➤ YN0000: ┌ Resolution step
+➤ YN0085: │ + @types/node@npm:24.2.1, tsx@npm:4.20.3, typescript@patch:typescript@npm%3A5.9.2#optional!builtin<compat/typescript>::version=5.9.2&hash=5786d5, @esbuild/aix-ppc64@npm:0.25.8, and 122 more.
+➤ YN0000: └ Completed in 1s 626ms
+➤ YN0000: ┌ Fetch step
+➤ YN0013: │ 43 packages were added to the project (+ 62.85 MiB).
+➤ YN0000: └ Completed in 1s 67ms
+➤ YN0000: ┌ Link step
+➤ YN0007: │ esbuild@npm:0.25.8 must be built because it never has been before or the last one failed
+➤ YN0000: └ Completed in 0s 454ms
+➤ YN0000: · Done in 3s 166ms
+```
+
+Refactored index.js => index.ts with modern import style
+
+```bash
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn add --dev @types/koa
+➤ YN0000: · Yarn 4.9.2
+➤ YN0000: ┌ Resolution step
+➤ YN0085: │ + @types/koa@npm:3.0.0, @types/accepts@npm:1.3.7, @types/body-parser@npm:1.19.6, @types/connect@npm:3.4.38, @types/content-disposition@npm:0.5.9, @types/cookies@npm:0.9.1, and 11 more.
+➤ YN0000: └ Completed in 0s 483ms
+➤ YN0000: ┌ Fetch step
+➤ YN0013: │ 11 packages were added to the project (+ 148.91 KiB).
+➤ YN0000: └ Completed in 0s 644ms
+➤ YN0000: ┌ Link step
+➤ YN0000: └ Completed
+➤ YN0000: · Done in 1s 226ms
+```
