@@ -188,3 +188,20 @@ Add watch functionallity and refactoring
 ## Debugging
 
 Added a debugger (in package.json)
+
+## Logger
+
+```bash
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn add winston
+➤ YN0000: · Yarn 4.9.2
+➤ YN0000: ┌ Resolution step
+➤ YN0085: │ + winston@npm:3.17.0, @colors/colors@npm:1.6.0, @dabh/diagnostics@npm:2.0.3, @types/triple-beam@npm:1.3.5, async@npm:3.2.6, color-convert@npm:1.9.3, color-name@npm:1.1.3, and 20 more.
+➤ YN0000: └ Completed in 0s 494ms
+➤ YN0000: ┌ Fetch step
+➤ YN0013: │ 3 packages were added to the project (+ 445.47 KiB).
+➤ YN0000: └ Completed
+➤ YN0000: ┌ Link step
+➤ YN0000: └ Completed
+➤ YN0000: · Done in 0s 832ms
+```
