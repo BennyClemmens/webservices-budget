@@ -1,14 +1,14 @@
 {
   "name": "webservices-budget",
-  "version" : "2.0.0",
-  "description" : "Following allong with the demo repo of the Web Services course",
+  "version": "2.0.0",
+  "description": "Following allong with the demo repo of the Web Services course",
   "main": "index.js",
-  "repository" : "https://github.com/BennyClemmens/webservices-budget/",
+  "repository": "https://github.com/BennyClemmens/webservices-budget/",
   "license": "MIT",
   "packageManager": "yarn@4.9.2",
   "private": true,
   "scripts": {
-    "start" : "node index.js"
+    "start": "node index.js"
   },
   "dependencies": {
     "koa": "^3.0.1"
