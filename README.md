@@ -205,3 +205,62 @@ $ yarn add winston
 ➤ YN0000: └ Completed
 ➤ YN0000: · Done in 0s 832ms
 ```
+
+## Linting
+
+```bash
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn add --dev eslint @eslint/js typescript-eslint @stylistic/eslint-plugin
+➤ YN0000: · Yarn 4.9.2
+➤ YN0000: ┌ Resolution step
+➤ YN0085: │ + @eslint/js@npm:9.33.0, @stylistic/eslint-plugin@npm:5.2.3, eslint@npm:9.33.0, typescript-eslint@npm:8.39.0, @eslint-community/eslint-utils@npm:4.7.0, and 99 more.
+➤ YN0000: └ Completed in 1s 187ms
+➤ YN0000: ┌ Fetch step
+➤ YN0013: │ 38 packages were added to the project (+ 11.09 MiB).
+➤ YN0000: └ Completed in 0s 402ms
+➤ YN0000: ┌ Link step
+➤ YN0000: └ Completed in 0s 627ms
+➤ YN0000: · Done in 2s 253ms
+```
+Let's see ...
+
+```bash
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn lint
+
+D:\DATA\GIT\WEBSERVICES\webservices-budget\build\index.js
+   5:23  error  'exports' is not defined                 no-undef
+   6:31  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   6:31  error  'require' is not defined                 no-undef
+   9:5   error  'console' is not defined                 no-undef
+  11:5   error  'console' is not defined                 no-undef
+
+D:\DATA\GIT\WEBSERVICES\webservices-budget\src\index.ts
+  2:27  error  Strings must use singlequote  @stylistic/quotes
+
+✖ 6 problems (6 errors, 0 warnings)
+  1 error and 0 warnings potentially fixable with the `--fix` option.
+```
+
+Fixed some with an ignore build in config
+
+```bash
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn lint --fix
+
+D:\DATA\GIT\WEBSERVICES\webservices-budget\build\index.js
+   5:23  error  'exports' is not defined                 no-undef
+   6:31  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   6:31  error  'require' is not defined                 no-undef
+   9:5   error  'console' is not defined                 no-undef
+  11:5   error  'console' is not defined                 no-undef
+
+✖ 5 problems (5 errors, 0 warnings)
+
+
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn lint
+```
+
+In een eerdere poging moest de versie van ts nog lager wxorden gezet, hier is die fout verdwenen, check with own project!
+

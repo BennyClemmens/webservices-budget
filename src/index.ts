@@ -1,5 +1,5 @@
 import Koa from 'koa';
-import { getLogger } from "./core/logging";
+import { getLogger } from './core/logging';
 
 const app = new Koa();
 
