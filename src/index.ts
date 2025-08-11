@@ -17,6 +17,16 @@ router.get('/api/transactions', async (context) => {
   };
 });
 
+router.post('/api/transactions', async (context) => {
+  const newTransaction = transactionService.create({
+    ...context.request.body, // hierin zit de transaction (amount?)
+    date: new Date(context.request.body.date),
+    placeId: Number(context.request.body.placeId), // temp solution untill validation
+    userId: Number(context.request.body.userId), // temp solution untill validation
+  });
+  context.body = newTransaction; // zodat gebruiker het resultaat ziet ...
+});
+
 app.use(router.routes()).use(router.allowedMethods());
 
 app.listen(9000, () => {

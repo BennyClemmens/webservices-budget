@@ -344,3 +344,8 @@ src/data/mock_data.ts met een kleine aanpssing (USERS ook toegevoegd)
 
 in src/service/transaction.service.ts enkele aanpassingen (userId), ook om linting happy te maken
 
+in src/index.ts de service gebruikt om de body (als json object, niet als array) terug te gevens
+
+### POST
+
+post implementend (with userId), for now with type errors
