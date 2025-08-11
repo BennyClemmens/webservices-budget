@@ -367,3 +367,9 @@ routing komt in de rest-laag
 ### Health
 
 ping en version endpoints added
+
+### Logging
+
+TODO: lees de best practices :)
+
+Veel extra tweaks die afwijken van de demo-app, credits to chatgpt
