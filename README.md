@@ -124,13 +124,13 @@ $ yarn add koa
 
 Configured package.json, .gitignore and made a firsdt index.js
 
-## Middlewares
+### Middlewares
 
 Note: yarn install did an auto refactoring of package.json
 
 To understand middelwares: understand Promises
 
-## Typescript
+### Typescript
 
 ```bash
 benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
@@ -185,11 +185,11 @@ $ yarn build
 
 Add watch functionallity and refactoring
 
-## Debugging
+### Debugging
 
 Added a debugger (in package.json)
 
-## Logger
+### Logger
 
 ```bash
 benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
@@ -206,7 +206,7 @@ $ yarn add winston
 ➤ YN0000: · Done in 0s 832ms
 ```
 
-## Linting
+### Linting
 
 ```bash
 benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
@@ -262,5 +262,37 @@ benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
 $ yarn lint
 ```
 
-In een eerdere poging moest de versie van ts nog lager wxorden gezet, hier is die fout verdwenen, check with own project!
+In een eerdere poging moest de versie van ts nog lager worden gezet, hier is die fout verdwenen, check with own project!
 
+## 3. REST API bouwen
+
+```bash
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn add config
+➤ YN0000: · Yarn 4.9.2
+➤ YN0000: ┌ Resolution step
+➤ YN0085: │ + config@npm:4.1.0, json5@npm:2.2.3
+➤ YN0000: └ Completed in 0s 398ms
+➤ YN0000: ┌ Fetch step
+➤ YN0013: │ A package was added to the project (+ 114.19 KiB).
+➤ YN0000: └ Completed in 0s 404ms
+➤ YN0000: ┌ Link step
+➤ YN0000: └ Completed
+➤ YN0000: · Done in 1s 52ms
+
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn add --dev @types/config
+➤ YN0000: · Yarn 4.9.2
+➤ YN0000: ┌ Resolution step
+➤ YN0085: │ + @types/config@npm:3.3.5
+➤ YN0000: └ Completed
+➤ YN0000: ┌ Fetch step
+➤ YN0000: └ Completed
+➤ YN0000: ┌ Link step
+➤ YN0000: └ Completed
+➤ YN0000: · Done in 0s 533ms
+```
+
+.env toegevoegd in root van project met inhoud NODE_ENV=production/development maar niet in git te zien, dus toe te voegen aan instructies.
+
+config/development.ts en config/production.ts aangemaakt en gebruikt in core/logging.ts

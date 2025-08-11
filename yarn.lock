@@ -443,6 +443,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/config@npm:^3.3.5":
+  version: 3.3.5
+  resolution: "@types/config@npm:3.3.5"
+  checksum: 10c0/32f57d8bd8a6bd79d29a7f26f945b537f745dbadc33cd8eaad98f6e466e0175fb90ae37952352fa6509a0f5de212b9bd0af320bc3bb5f8579af6affe5e3410f6
+  languageName: node
+  linkType: hard
+
 "@types/connect@npm:*":
   version: 3.4.38
   resolution: "@types/connect@npm:3.4.38"
@@ -992,6 +999,15 @@ __metadata:
   version: 0.0.1
   resolution: "concat-map@npm:0.0.1"
   checksum: 10c0/c996b1cfdf95b6c90fee4dae37e332c8b6eb7d106430c17d538034c0ad9a1630cb194d2ab37293b1bdd4d779494beee7786d586a50bd9376fd6f7bcc2bd4c98f
+  languageName: node
+  linkType: hard
+
+"config@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "config@npm:4.1.0"
+  dependencies:
+    json5: "npm:^2.2.3"
+  checksum: 10c0/46475d6b11244118f6e906dc94aef6108a9c1180e9025a2f2027d3925f1a36327e2a2b4e9abc2aef7de7e7f34eb10ec82109c3be1d4290dd7011a3139a154a99
   languageName: node
   linkType: hard
 
@@ -1835,6 +1851,15 @@ __metadata:
   version: 1.0.1
   resolution: "json-stable-stringify-without-jsonify@npm:1.0.1"
   checksum: 10c0/cb168b61fd4de83e58d09aaa6425ef71001bae30d260e2c57e7d09a5fd82223e2f22a042dedaab8db23b7d9ae46854b08bb1f91675a8be11c5cffebef5fb66a5
+  languageName: node
+  linkType: hard
+
+"json5@npm:^2.2.3":
+  version: 2.2.3
+  resolution: "json5@npm:2.2.3"
+  bin:
+    json5: lib/cli.js
+  checksum: 10c0/5a04eed94810fa55c5ea138b2f7a5c12b97c3750bc63d11e511dcecbfef758003861522a070c2272764ee0f4e3e323862f386945aeb5b85b87ee43f084ba586c
   languageName: node
   linkType: hard
 
@@ -2785,8 +2810,10 @@ __metadata:
   dependencies:
     "@eslint/js": "npm:^9.33.0"
     "@stylistic/eslint-plugin": "npm:^5.2.3"
+    "@types/config": "npm:^3.3.5"
     "@types/koa": "npm:^3.0.0"
     "@types/node": "npm:^24.2.1"
+    config: "npm:^4.1.0"
     eslint: "npm:^9.33.0"
     koa: "npm:^3.0.1"
     tsx: "npm:^4.20.3"

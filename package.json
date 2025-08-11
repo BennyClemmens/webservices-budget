@@ -8,18 +8,20 @@
   "packageManager": "yarn@4.9.2",
   "private": true,
   "scripts": {
-    "start:dev": "tsx watch --inspect=127.0.0.1:9001 src/index.ts",
-    "start:debug": "tsx watch --inspect=127.0.0.1:9001 --inspect-brk src/index.ts",
+    "start:dev": "tsx watch --env-file .env --inspect=127.0.0.1:9001 src/index.ts",
+    "start:debug": "tsx watch --env-file .env --inspect=127.0.0.1:9001 --inspect-brk src/index.ts",
     "build": "tsc",
     "lint": "eslint ."
   },
   "dependencies": {
+    "config": "^4.1.0",
     "koa": "^3.0.1",
     "winston": "^3.17.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
     "@stylistic/eslint-plugin": "^5.2.3",
+    "@types/config": "^3.3.5",
     "@types/koa": "^3.0.0",
     "@types/node": "^24.2.1",
     "eslint": "^9.33.0",
