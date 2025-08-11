@@ -296,3 +296,7 @@ $ yarn add --dev @types/config
 .env toegevoegd in root van project met inhoud NODE_ENV=production/development maar niet in git te zien, dus toe te voegen aan instructies.
 
 config/development.ts en config/production.ts aangemaakt en gebruikt in core/logging.ts
+
+### CRUD operaties
+
+We maken even een eigen router in index.ts, die we dan straks wat professioneler via koa-router gaan implementeren.
