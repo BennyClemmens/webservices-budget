@@ -357,3 +357,9 @@ licht anders dankzij user
 ### PUT en DELETE
 
 zie code
+
+## Refactoring
+
+### Rest
+
+routing komt in de rest-laag
