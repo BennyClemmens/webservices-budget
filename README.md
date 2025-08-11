@@ -363,3 +363,7 @@ zie code
 ### Rest
 
 routing komt in de rest-laag
+
+### Health
+
+ping en version endpoints added
