@@ -359,6 +359,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@koa/cors@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@koa/cors@npm:5.0.0"
+  dependencies:
+    vary: "npm:^1.1.2"
+  checksum: 10c0/49e5f3b861590bd81aa3663a2f0658234a9b378840bb54a2947b3c5f2067f9d966b6fa2e9049fdc7c74c787456d1885bacd0b7ee1f134274d28282c7df99c3fd
+  languageName: node
+  linkType: hard
+
 "@koa/router@npm:^14.0.0":
   version: 14.0.0
   resolution: "@koa/router@npm:14.0.0"
@@ -586,6 +595,15 @@ __metadata:
     "@types/koa-compose": "npm:*"
     "@types/node": "npm:*"
   checksum: 10c0/69ac13b9da736cb645e1837b714c2eb21655b61d341a82389702c3f8157071aad1c0953847e0c51bb1ed3accde839691b7e3d2d422ad1c5f215783a451b52897
+  languageName: node
+  linkType: hard
+
+"@types/koa__cors@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@types/koa__cors@npm:5.0.0"
+  dependencies:
+    "@types/koa": "npm:*"
+  checksum: 10c0/2392b4ad63b8f730fee49f5c2104602613e77cac8e5aaac42cd74c60107563ad6e1194422b565519462eb5358746f59f19f5e890896494f7e7de1ac71566bbb2
   languageName: node
   linkType: hard
 
@@ -3126,11 +3144,13 @@ __metadata:
   resolution: "webservices-budget@workspace:."
   dependencies:
     "@eslint/js": "npm:^9.33.0"
+    "@koa/cors": "npm:^5.0.0"
     "@koa/router": "npm:^14.0.0"
     "@stylistic/eslint-plugin": "npm:^5.2.3"
     "@types/config": "npm:^3.3.5"
     "@types/koa": "npm:^3.0.0"
     "@types/koa-bodyparser": "npm:^4.3.12"
+    "@types/koa__cors": "npm:^5.0.0"
     "@types/koa__router": "npm:^12.0.4"
     "@types/node": "npm:^24.2.1"
     config: "npm:^4.1.0"

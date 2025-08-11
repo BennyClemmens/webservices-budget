@@ -266,6 +266,8 @@ In een eerdere poging moest de versie van ts nog lager worden gezet, hier is die
 
 ## 3. REST API bouwen
 
+### Configuratie
+
 ```bash
 benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
 $ yarn add config
@@ -340,7 +342,7 @@ Added code to use a koa-router object to handle routes
 
 src/data/mock_data.ts met een kleine aanpssing (USERS ook toegevoegd)
 
-### Servicelaag
+#### Servicelaag
 
 in src/service/transaction.service.ts enkele aanpassingen (userId), ook om linting happy te maken
 
@@ -358,18 +360,45 @@ licht anders dankzij user
 
 zie code
 
-## Refactoring
+### Refactoring
 
-### Rest
+#### Rest
 
 routing komt in de rest-laag
 
-### Health
+#### Health
 
 ping en version endpoints added
 
-### Logging
+#### Logging
 
 TODO: lees de best practices :)
 
 Veel extra tweaks die afwijken van de demo-app, credits to chatgpt
+
+### CORS
+
+```bash
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn add @koa/cors
+➤ YN0000: · Yarn 4.9.2
+➤ YN0000: ┌ Resolution step
+➤ YN0085: │ + @koa/cors@npm:5.0.0, @types/koa__cors@npm:5.0.0
+➤ YN0000: └ Completed
+➤ YN0000: ┌ Fetch step
+➤ YN0000: └ Completed
+➤ YN0000: ┌ Link step
+➤ YN0000: └ Completed
+➤ YN0000: · Done in 0s 352ms
+
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn add --dev @types/koa__cors
+➤ YN0000: · Yarn 4.9.2
+➤ YN0000: ┌ Resolution step
+➤ YN0000: └ Completed
+➤ YN0000: ┌ Fetch step
+➤ YN0000: └ Completed
+➤ YN0000: ┌ Link step
+➤ YN0000: └ Completed
+➤ YN0000: · Done in 0s 286ms
+```
