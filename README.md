@@ -349,3 +349,11 @@ in src/index.ts de service gebruikt om de body (als json object, niet als array)
 ### POST
 
 post implementend (with userId), for now with type errors
+
+### Routes met parameter
+
+licht anders dankzij user
+
+### PUT en DELETE
+
+zie code

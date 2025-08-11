@@ -17,6 +17,11 @@ router.get('/api/transactions', async (context) => {
   };
 });
 
+router.get('/api/transactions/:id', async (context) => {
+  context.body = transactionService.getById(Number(context.params.id));
+  // 204 no content if not found...
+});
+
 router.post('/api/transactions', async (context) => {
   const newTransaction = transactionService.create({
     ...context.request.body, // hierin zit de transaction (amount?)
@@ -25,6 +30,20 @@ router.post('/api/transactions', async (context) => {
     userId: Number(context.request.body.userId), // temp solution untill validation
   });
   context.body = newTransaction; // zodat gebruiker het resultaat ziet ...
+});
+
+router.put('/api/transactions/:id', async (context) => {
+  context.body = transactionService.updateById(Number(context.params.id), {
+    ...context.request.body,
+    date: new Date(context.request.body.date),
+    placeId: Number(context.request.body.placeId),
+    userId: Number(context.request.body.userId),
+  });
+});
+
+router.delete('/api/transactions/:id', async (context) => {
+  transactionService.deleteById(Number(context.params.id));
+  context.status = 204;
 });
 
 app.use(router.routes()).use(router.allowedMethods());
