@@ -69,3 +69,11 @@ export const deleteById = (id: number) => {
     throw new Error(`Could not delete record with index ${index}`);
   console.log(JSON.stringify(deleted));
 };
+
+export const getTransactionsByPlaceId = async (placeId: number) => {
+  return TRANSACTIONS.filter((t) => t.place.id === placeId);
+};
+
+export const getTransactionsByUserId = async (userId: number) => {
+  return TRANSACTIONS.filter((t) => t.user.id === userId);
+};
