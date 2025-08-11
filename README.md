@@ -331,3 +331,5 @@ $ yarn add --dev @types/koa__router @types/koa-bodyparser
 ```
 
 And some manual code in app.use to check how the .body of a request is parsed
+
+Added code to use a koa-router object to handle routes
