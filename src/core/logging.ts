@@ -1,10 +1,9 @@
 import winston from 'winston';
 import config from 'config';
-import { env } from 'node:process';
 
 const LOG_LEVEL = config.get<string>('log.level');
 const LOG_DISABLED = config.get<boolean>('log.disabled');
-const NODE_ENV = env['NODE_ENV'];
+const NODE_ENV = config.get<string>('env');
 
 console.log(`node env: ${NODE_ENV}, log level ${LOG_LEVEL}, logs enabled: ${Boolean(LOG_DISABLED)}`);
 
