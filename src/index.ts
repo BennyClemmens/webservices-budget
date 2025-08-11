@@ -2,15 +2,19 @@ import Koa from 'koa';
 import { getLogger } from './core/logging';
 import bodyParser from 'koa-bodyparser';
 import Router from '@koa/router';
+import * as transactionService from './service/transaction.service';
 
 const app = new Koa();
 
-app.use(bodyParser()); // needs to before first use or body is not parsed => undefined
+app.use(bodyParser());
 
 const router = new Router();
 
 router.get('/api/transactions', async (context) => {
-  context.body = '[{"user": "Benjamin", "amount": 100, "place": "Irish Pub", "date": "2021-08-15" }]';
+  context.body = {
+    items: transactionService.getAll(), // geen arrays returnen in http response!
+    // perhaps check pagination as an extra ...
+  };
 });
 
 app.use(router.routes()).use(router.allowedMethods());

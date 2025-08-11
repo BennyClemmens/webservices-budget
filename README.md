@@ -339,3 +339,8 @@ Added code to use a koa-router object to handle routes
 #### Datalaag
 
 src/data/mock_data.ts met een kleine aanpssing (USERS ook toegevoegd)
+
+### Servicelaag
+
+in src/service/transaction.service.ts enkele aanpassingen (userId), ook om linting happy te maken
+
