@@ -300,3 +300,34 @@ config/development.ts en config/production.ts aangemaakt en gebruikt in core/log
 ### CRUD operaties
 
 We maken even een eigen router in index.ts, die we dan straks wat professioneler via koa-router gaan implementeren.
+
+### Router
+
+```bash
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn add @koa/router koa-bodyparser
+➤ YN0000: · Yarn 4.9.2
+➤ YN0000: ┌ Resolution step
+➤ YN0085: │ + @koa/router@npm:14.0.0, @types/koa-bodyparser@npm:4.3.12, koa-bodyparser@npm:4.4.1, @hapi/bourne@npm:3.0.0, bytes@npm:3.1.2, call-bind-apply-helpers@npm:1.0.2, call-bound@npm:1.0.4, and 26 more.
+➤ YN0000: └ Completed in 0s 987ms
+➤ YN0000: ┌ Fetch step
+➤ YN0013: │ 18 packages were added to the project (+ 742.53 KiB).
+➤ YN0000: └ Completed in 0s 421ms
+➤ YN0000: ┌ Link step
+➤ YN0000: └ Completed in 0s 328ms
+➤ YN0000: · Done in 1s 817ms
+
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn add --dev @types/koa__router @types/koa-bodyparser
+➤ YN0000: · Yarn 4.9.2
+➤ YN0000: ┌ Resolution step
+➤ YN0085: │ + @types/koa__router@npm:12.0.4
+➤ YN0000: └ Completed
+➤ YN0000: ┌ Fetch step
+➤ YN0000: └ Completed in 0s 234ms
+➤ YN0000: ┌ Link step
+➤ YN0000: └ Completed
+➤ YN0000: · Done in 0s 617ms
+```
+
+And some manual code in app.use to check how the .body of a request is parsed
