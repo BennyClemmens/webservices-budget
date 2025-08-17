@@ -402,3 +402,83 @@ $ yarn add --dev @types/koa__cors
 ➤ YN0000: └ Completed
 ➤ YN0000: · Done in 0s 286ms
 ```
+
+## 4. Datalaag en CRUD
+
+### Installatie Prisma
+
+```bash
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn add prisma
+➤ YN0000: · Yarn 4.9.2
+➤ YN0000: ┌ Resolution step
+➤ YN0085: │ + prisma@npm:6.14.0, @prisma/config@npm:6.14.0, @prisma/debug@npm:6.14.0, @prisma/engines-version@npm:6.14.0-25.717184b7b35ea05dfa71a3236b7af656013e1e49, @prisma/engines@npm:6.14.0, and 28 more.
+➤ YN0000: └ Completed in 5s 818ms
+➤ YN0000: ┌ Fetch step
+➤ YN0013: │ 33 packages were added to the project (+ 83.03 MiB).
+➤ YN0000: └ Completed in 4s 930ms
+➤ YN0000: ┌ Link step
+➤ YN0007: │ @prisma/engines@npm:6.14.0 must be built because it never has been before or the last one failed
+➤ YN0007: │ prisma@npm:6.14.0 [aae3f] must be built because it never has been before or the last one failed
+➤ YN0000: └ Completed in 3s 825ms
+➤ YN0000: · Done in 14s 612ms
+
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn add @prisma/client
+➤ YN0000: · Yarn 4.9.2
+➤ YN0000: ┌ Resolution step
+➤ YN0085: │ + @prisma/client@npm:6.14.0
+➤ YN0000: └ Completed
+➤ YN0000: ┌ Fetch step
+➤ YN0013: │ A package was added to the project (+ 93.17 MiB).
+➤ YN0000: └ Completed in 6s 243ms
+➤ YN0000: ┌ Link step
+➤ YN0007: │ @prisma/client@npm:6.14.0 [aae3f] must be built because it never has been before or the last one failed
+➤ YN0000: └ Completed in 1s 647ms
+➤ YN0000: · Done in 7s 996ms
+```
+
+```bash
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn prisma init --datasource-provider mysql
+Fetching latest updates for this subcommand...
+
+✔ Your Prisma schema was created at prisma/schema.prisma
+  You can now open it in your favorite editor.
+
+warn You already have a .gitignore file. Don't forget to add `.env` in it to not commit any private information.
+
+Next steps:
+1. Set the DATABASE_URL in the .env file to point to your existing database. If your database has no tables yet, read https://pris.ly/d/getting-started
+2. Run prisma db pull to turn your database schema into a Prisma schema.
+3. Run prisma generate to generate the Prisma Client. You can then start querying your database.
+4. Tip: Explore how you can extend the ORM with scalable connection pooling, global caching, and a managed serverless Postgres database. Read: https://pris.ly/cli/beyond-orm
+
+More information in our documentation:
+https://pris.ly/d/getting-started
+
+```
+
+```bash
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn prisma migrate dev --name init
+Loaded Prisma config from prisma.config.ts.
+
+Prisma config detected, skipping environment variable loading.
+Prisma schema loaded from src\data\schema.prisma
+Datasource "db": MySQL database "budget" at "localhost:3306"
+
+MySQL database budget created at localhost:3306
+
+Applying migration `20250816173757_init`
+
+The following migration(s) have been created and applied from new schema changes:
+
+src\data\migrations/
+  └─ 20250816173757_init/
+    └─ migration.sql
+
+Your database is now in sync with your schema.
+
+✔ Generated Prisma Client (v6.14.0) to .\node_modules\@prisma\client in 35ms
+```
