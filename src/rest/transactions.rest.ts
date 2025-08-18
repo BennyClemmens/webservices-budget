@@ -4,18 +4,18 @@ import type { Context } from 'koa'; // type not in OLOD?
 
 const getAllTransactions = async (context: Context) => {
   context.body = {
-    items: transactionService.getAll(), // geen arrays returnen in http response!
+    items: await transactionService.getAll(), // geen arrays returnen in http response!
     // perhaps check pagination as an extra ...
   };
 };
 
 const getTransactionById = async (context: Context) => {
-  context.body = transactionService.getById(Number(context.params.id));
+  context.body = await transactionService.getById(Number(context.params.id));
   // 204 no content if not found...
 };
 
 const createTransaction = async (context: Context) => {
-  const newTransaction = transactionService.create({
+  const newTransaction = await transactionService.create({
     ...context.request.body, // hierin zit de transaction (amount?)
     date: new Date(context.request.body.date),
     placeId: Number(context.request.body.placeId), // temp solution untill validation
@@ -25,7 +25,7 @@ const createTransaction = async (context: Context) => {
 };
 
 const updateTransactionById = async (context: Context) => {
-  context.body = transactionService.updateById(Number(context.params.id), {
+  context.body = await transactionService.updateById(Number(context.params.id), {
     ...context.request.body,
     date: new Date(context.request.body.date),
     placeId: Number(context.request.body.placeId),
@@ -34,7 +34,7 @@ const updateTransactionById = async (context: Context) => {
 };
 
 const deleteTransactionById = async (context: Context) => {
-  transactionService.deleteById(Number(context.params.id));
+  await transactionService.deleteById(Number(context.params.id));
   context.status = 204;
 };
 

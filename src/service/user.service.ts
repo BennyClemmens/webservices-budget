@@ -1,55 +1,27 @@
-import { USERS } from '../data/mock_data';
+import { prisma } from '../data';
 
-export const getAll = () => {
-  return USERS;
+export const getAll = async () => {
+  return await prisma.user.findMany();
 };
 
-export const getById = (id: number) => {
-  const existingUser = USERS.find((u) => u.id === id);
-  if (! existingUser)
-    throw new Error(`There is no user with id ${id}`);
-  return existingUser;
+export const getById = async (id: number) => {
+  return await prisma.user.findUnique({ where: { id } });
 };
 
-export const create = ({ name, surname }: any) => {
-  const maxId = Math.max(...USERS.map((i) => i.id));
-  const newUser = { // objec literal !
-    id: maxId + 1,
-    name,
-    surname,
-  };
-  USERS.push(newUser);
-  return newUser;
+export const create = async ({ name, surname }: any) => {
+  return await prisma.user.create({ data: { name, surname } });
 };
 
-export const updateById = (
+export const updateById = async (
   id: number,
   { name, surname }: any,
 ) => {
-
-  const index = USERS.findIndex((u) => u.id === id);
-  if (index === -1)
-    throw new Error(`There is no user with id ${id}`);
-
-  //const currentUser= UESERS[index];
-  //console.log(currentUser);
-
-  const updatedUser = {
-    ...USERS[index],
-    id,
-    name,
-    surname,
-  };
-  USERS[index] = updatedUser;
-  return updatedUser;
+  return await prisma.user.update({
+    where: { id },
+    data: { name, surname },
+  });
 };
 
-export const deleteById = (id: number) => {
-  const index = USERS.findIndex((p) => p.id === id);
-  if (index === -1)
-    throw new Error(`There is no user with id ${id}`);
-  const deleted = USERS.splice(index, 1);
-  if (! deleted)
-    throw new Error(`Could not delete record with index ${index}`);
-  console.log(JSON.stringify(deleted));
+export const deleteById = async (id: number) => {
+  await prisma.user.delete({ where: { id } });
 };

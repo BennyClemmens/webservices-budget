@@ -1,6 +1,6 @@
 export default {
   log: {
-    level: 'silly',
+    level: 'debug',
     disabled: false,
   },
   cors: {

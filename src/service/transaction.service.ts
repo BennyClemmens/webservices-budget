@@ -1,79 +1,105 @@
-import { TRANSACTIONS, PLACES, USERS } from '../data/mock_data';
+import { prisma } from '../data';
+import * as placeService from '../service/place.service';
+import * as userService from '../service/user.service';
 
-export const getAll = () => {
-  return TRANSACTIONS;
+const TRANSACTION_SELECT = {
+  id: true,
+  amount: true,
+  date: true,
+  place: true,
+  user: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
 };
 
-export const getById = (id: number) => {
-  const existingTransaction = TRANSACTIONS.find((t) => t.id === id);
-  if (! existingTransaction)
-    throw new Error(`There is no transaction with id ${id}`);
-  return existingTransaction;
+export const getAll = async () => {
+  const transactions =  await prisma.transaction.findMany({
+    select: TRANSACTION_SELECT,
+  });
+  return transactions;
 };
 
-export const create = ({ amount, date, placeId, userId }: any) => {
-  const existingPlace = PLACES.find((place) => place.id === placeId);
-  const existingUser = USERS.find((user) => user.id === userId);
+export const getById = async (id: number) => {
+  const transaction = await prisma.transaction.findUnique({
+    where: {
+      id,
+    },
+    select: TRANSACTION_SELECT,
+  });
+  // if (! existingTransaction)
+  //   throw new Error(`There is no transaction with id ${id}`);
+  return transaction;
+};
+
+export const create = async ({ amount, date, placeId, userId }: any) => {
+  const existingPlace = await placeService.getById(placeId);
+  const existingUser = await userService.getById(userId);
   if (! (existingPlace && existingUser)) {
     throw new Error(`There is no place with id ${placeId} or no user with id ${userId}`);
   }
-  const maxId = Math.max(...TRANSACTIONS.map((i) => i.id));
-  const newTransaction = { // objec literal !
-    id: maxId + 1,
-    amount,
-    date: date.toISOString(),
-    place: existingPlace,
-    user: existingUser,
-    //user: { id: Math.floor(Math.random() * 100000), name: user }, => wouldn't work (surname...)
-  };
-  TRANSACTIONS.push(newTransaction);
-  return newTransaction;
+  const transaction = await prisma.transaction.create({
+    data: {
+      amount,
+      date,
+      user_id : userId,
+      place_id : placeId,
+    },
+    select: TRANSACTION_SELECT,
+  });
+  return transaction;
 };
 
-export const updateById = (
+export const updateById = async (
   id: number,
   { amount, date, placeId, userId }: any,
 ) => {
-
-  const index = TRANSACTIONS.findIndex((t) => t.id === id);
-  if (index === -1)
-    throw new Error(`There is no transaction with id ${id}`);
-  const existingPlace = PLACES.find((place) => place.id === placeId);
-  const existingUser = USERS.find((user) => user.id === userId);
-
-  if (! (existingPlace && existingUser)) {
-    throw new Error(`There is no place with id ${placeId} or no user with id ${userId}`);
-  }
-  
-  //const currentTransaction = TRANSACTIONS[index];
-  //console.log(currentTransaction);
-
-  const updatedTransaction = {
-    ...TRANSACTIONS[index],
-    id,
-    amount,
-    date: date.toISOString(),
-    place: existingPlace,
-    user: existingUser,
-  };
-  TRANSACTIONS[index] = updatedTransaction;
-  return updatedTransaction;
+  const transaction = await prisma.transaction.update({
+    where: {
+      id,
+    },
+    data: {
+      amount,
+      date,
+      place_id: placeId,
+      user_id: userId,
+    },
+  });
+  //error handling later...
+  return transaction;
 };
 
-export const deleteById = (id: number) => {
-  const index = TRANSACTIONS.findIndex((t) => t.id === id);
-  if (index === -1)
-    throw new Error(`There is no transaction with id ${id}`);
-  const deleted = TRANSACTIONS.splice(index, 1);
-  if (! deleted)
-    throw new Error(`Could not delete record with index ${index}`);
-  console.log(JSON.stringify(deleted));
+export const deleteById = async (id: number) => {
+  await prisma.transaction.delete({
+    where: {
+      id,
+    },
+  });
+  // no return, error handling later
 };
 
 export const getTransactionsByPlaceId = async (placeId: number) => {
-  return TRANSACTIONS.filter((t) => t.place.id === placeId);
+  const transactions = await prisma.transaction.findMany({
+    where: {
+      AND: [
+        {place_id: placeId},
+      ],
+    },
+    select: TRANSACTION_SELECT,
+  });
+  return transactions;
 };
 
 export const getTransactionsByUserId = async (userId: number) => {
-  return TRANSACTIONS.filter((t) => t.user.id === userId);
+  const transactions = await prisma.transaction.findMany({
+    where: {
+      AND: [
+        {user_id: userId},
+      ],
+    },
+    select: TRANSACTION_SELECT,
+  });
+  return transactions;
 };

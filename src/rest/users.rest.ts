@@ -4,14 +4,15 @@ import * as transactionService from '../service/transaction.service';
 import type { Context } from 'koa';
 
 const getAllUsers = async (ctx: Context) => {
-  const users = userService.getAll();
+  const users = await userService.getAll();
   ctx.body = {
     items: users,
   };
 };
 
 const getUserById = async (ctx: Context) => {
-  const user = userService.getById(Number(ctx.params.id));
+  const user = await userService.getById(Number(ctx.params.id));
+  ctx.status = 200;
   ctx.body = user;
 };
 
@@ -23,18 +24,19 @@ const getTransactionsByUserId = async (context: Context) => {
 };
 
 const createUser = async (ctx: Context) => {
-  const user = userService.create(ctx.request.body!);
-  ctx.status = 201;  // new
+  const user = await userService.create(ctx.request.body!);
+  ctx.status = 201;
   ctx.body = user;
 };
 
 const updateUserById = async (ctx: Context) => {
-  const user = userService.updateById(Number(ctx.params.id), ctx.request.body!);
+  const user = await userService.updateById(Number(ctx.params.id), ctx.request.body!);
   ctx.body = user;
+  // status?
 };
 
 const deleteUserById = async (ctx: Context) => {
-  userService.deleteById(Number(ctx.params.id));
+  await userService.deleteById(Number(ctx.params.id));
   ctx.status = 204;
 };
 
