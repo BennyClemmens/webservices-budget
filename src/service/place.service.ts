@@ -1,8 +1,11 @@
-//import { PLACES } from '../data/mock_data';
 import { prisma } from '../data';
 import { getLogger } from '../core/logging';
 import { Prisma } from '@prisma/client';
 import { NotFoundError } from '../core/NotFoundError';
+import type { Place } from '../types/place';
+import type { PlaceCreateInput } from '../types/place';
+import type { PlaceUpdateInput } from '../types/place';
+// import type { Entity } from '../types/common';
 
 // const PLACE_SELECT: Prisma.PlaceSelect = {
 //   // id: true,
@@ -31,10 +34,7 @@ import { NotFoundError } from '../core/NotFoundError';
 //   },
 // };
 
-export const getAll = async () => {
-  // return prisma.place.findMany({
-  //   select: PLACE_SELECT,
-  // });
+export const getAll = async (): Promise<Place[]> => {
   return prisma.place.findMany();
 };
 
@@ -44,7 +44,7 @@ export const getAll = async () => {
  * @param id - The ID of the place to retrieve.
  * @returns The place object if found, otherwise throws an error.
  */
-export const getById = async (id: number) => {
+export const getById = async (id: number): Promise<Place> => {
   try {
     const place = await prisma.place.findUniqueOrThrow({
       // select: PLACE_SELECT,
@@ -79,12 +79,10 @@ export const getById = async (id: number) => {
   }
 };
 
-export const create = async ({ name, rating }: any) => {
+// export const create = async ({ name, rating }: PlaceCreateInput): Promise<Place> => {
+export const create = async (placeInput: PlaceCreateInput): Promise<Place> => {
   const place = await prisma.place.create({
-    data: {
-      name,
-      rating,
-    },
+    data: placeInput,
   });
   return place;
   
@@ -100,22 +98,20 @@ export const create = async ({ name, rating }: any) => {
 
 export const updateById = async (
   id: number,
-  { name, rating }: any,
-) => {
+  placeUpdate: PlaceUpdateInput,
+  // {id, name, rating }: Place,
+): Promise<Place> => {
   const place = await prisma.place.update({
     where: {
       id,
     },
-    data: {
-      name,
-      rating,
-    },
+    data: placeUpdate,
   });
   return place;
   // error handling: later
 };
 
-export const deleteById = async (id: number) => {
+export const deleteById = async (id: number): Promise<void> => {
   await prisma.place.delete({
     where: {
       id,
