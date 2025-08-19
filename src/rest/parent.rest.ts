@@ -1,12 +1,12 @@
 import Router from '@koa/router';
-import type Application from 'koa';
+import type { BudgetAppContext, BudgetAppState, KoaApplication } from '../types/koa';
 import installHealthRouter from './health.rest';
 import installTransactionsRouter from './transactions.rest';
 import installPlacesRouter from './places.rest';
 import installUsersRouter from './users.rest';
 
-export default (app: Application) => {
-  const parentRouter = new Router({
+export default (app: KoaApplication) => {
+  const parentRouter = new Router<BudgetAppState, BudgetAppContext>({
     prefix: '/api',
   });
 

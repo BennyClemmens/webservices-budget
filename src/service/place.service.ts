@@ -46,28 +46,29 @@ export const getAll = async (): Promise<Place[]> => {
  */
 export const getById = async (id: number): Promise<Place> => {
   try {
-    const place = await prisma.place.findUniqueOrThrow({
+    const place: Place = await prisma.place.findUniqueOrThrow({
       // select: PLACE_SELECT,
       where: {
         id,
       },
       //include: PLACE_INCLUDE,
-      // include: {
-      //   _count: true,
-      //   transactions: {
-      //     select: {
-      //     //  id: true,
-      //       amount: true,
-      //       date: true,
-      //       //   //place: true,
-      //       user: {
-      //         omit: {
-      //           id: true,
-      //         },
-      //       },
-      //     },
-      //   },
-      // },
+      include: {
+        // _count: true,
+        transactions: {
+          select: {
+            id: true,
+            amount: true,
+            date: true,
+            place: true,
+            user: true,
+            // {
+            //   omit: {
+            //     id: true,
+            //   },
+            // },
+          },
+        },
+      },
     });
     getLogger().debug(`${JSON.stringify(place)}`);
     return place;
@@ -81,7 +82,7 @@ export const getById = async (id: number): Promise<Place> => {
 
 // export const create = async ({ name, rating }: PlaceCreateInput): Promise<Place> => {
 export const create = async (placeInput: PlaceCreateInput): Promise<Place> => {
-  const place = await prisma.place.create({
+  const place: Place = await prisma.place.create({
     data: placeInput,
   });
   return place;
@@ -101,7 +102,7 @@ export const updateById = async (
   placeUpdate: PlaceUpdateInput,
   // {id, name, rating }: Place,
 ): Promise<Place> => {
-  const place = await prisma.place.update({
+  const place: Place = await prisma.place.update({
     where: {
       id,
     },

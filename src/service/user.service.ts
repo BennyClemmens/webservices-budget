@@ -5,8 +5,8 @@ export const getAll = async (): Promise<User[]> => {
   return await prisma.user.findMany();
 };
 
-export const getById = async (id: number): Promise<User| null>  => {
-  return await prisma.user.findUnique({ where: { id } });
+export const getById = async (id: number): Promise<User>  => {
+  return await prisma.user.findUniqueOrThrow({ where: { id } });
 };
 
 export const create = async (userCreateInput: UserCreateInput): Promise<User> => {

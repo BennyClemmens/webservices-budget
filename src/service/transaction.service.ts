@@ -2,12 +2,19 @@ import { prisma } from '../data';
 import * as placeService from '../service/place.service';
 import * as userService from '../service/user.service';
 import type { Transaction, TransactionCreateInput, TransactionUpdateInput } from '../types/transaction';
+import type { Place } from '../types/place';
+import type { User } from '../types/user';
 
 const TRANSACTION_SELECT = {
   id: true,
   amount: true,
   date: true,
-  place: true,
+  place: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
   user: {
     select: {
       id: true,
@@ -18,31 +25,31 @@ const TRANSACTION_SELECT = {
 };
 
 export const getAll = async (): Promise<Transaction[]> => {
-  const transactions =  await prisma.transaction.findMany({
+  const transactions: Transaction[] =  await prisma.transaction.findMany({
     select: TRANSACTION_SELECT,
   });
   return transactions;
 };
 
-export const getById = async (id: number): Promise<Transaction | null> => {
-  const transaction = await prisma.transaction.findUnique({
+export const getById = async (id: number): Promise<Transaction> => {
+  const transaction: Transaction | null = await prisma.transaction.findUnique({
     where: {
       id,
     },
     select: TRANSACTION_SELECT,
   });
-  // if (! existingTransaction)
-  //   throw new Error(`There is no transaction with id ${id}`);
+  if (! transaction)
+    throw new Error(`There is no transaction with id ${id}`);
   return transaction;
 };
 
 export const create = async ({ amount, date, placeId, userId }: TransactionCreateInput): Promise<Transaction> => {
-  const existingPlace = await placeService.getById(placeId);
-  const existingUser = await userService.getById(userId);
+  const existingPlace: Place = await placeService.getById(placeId);
+  const existingUser: User|null = await userService.getById(userId);
   if (! (existingPlace && existingUser)) {
     throw new Error(`There is no place with id ${placeId} or no user with id ${userId}`);
   }
-  const transaction = await prisma.transaction.create({
+  const transaction : Transaction = await prisma.transaction.create({
     data: {
       amount,
       date,
@@ -57,7 +64,7 @@ export const create = async ({ amount, date, placeId, userId }: TransactionCreat
 export const updateById = async (
   id: number,
   { amount, date, placeId, userId }: TransactionUpdateInput): Promise<Transaction> => {
-  const transaction = await prisma.transaction.update({
+  const transaction : Transaction = await prisma.transaction.update({
     where: {
       id,
     },
@@ -83,7 +90,7 @@ export const deleteById = async (id: number): Promise<void> => {
 };
 
 export const getTransactionsByPlaceId = async (placeId: number): Promise<Transaction[]> => {
-  const transactions = await prisma.transaction.findMany({
+  const transactions: Transaction[] = await prisma.transaction.findMany({
     where: {
       AND: [
         {place_id: placeId},
@@ -95,7 +102,7 @@ export const getTransactionsByPlaceId = async (placeId: number): Promise<Transac
 };
 
 export const getTransactionsByUserId = async (userId: number): Promise<Transaction[]> => {
-  const transactions = await prisma.transaction.findMany({
+  const transactions: Transaction[] = await prisma.transaction.findMany({
     where: {
       AND: [
         {user_id: userId},
