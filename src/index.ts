@@ -1,43 +1,91 @@
-import Koa from 'koa';
+import type winston from 'winston';
+import createServer from './core/createServer';
 import { getLogger } from './core/logging';
-import bodyParser from 'koa-bodyparser';
-import installRest from './rest/parent.rest';
-import config from 'config';
-import koaCors from '@koa/cors';
-import { initializeData } from './data';
-import type { BudgetAppContext, BudgetAppState } from './types/koa';
+import type { BudgetServer } from './types/server';
 
-const CORS_ORIGINS = config.get<string[]>('cors.origins');
-const CORS_MAX_AGE = config.get<number>('cors.maxAge');
+async function main(): Promise<void> {  // perhaps in a helper function?
+  async function flushLoggerAndExit(exitCode: number = 0, logger: winston.Logger= getLogger()) {
+    const transports: winston.transport[] = logger.transports;
+    let remaining: number = transports.length;
 
-async function main() {
-  const app = new Koa<BudgetAppState, BudgetAppContext>();
+    if (remaining === 0) {
+      process.exit(exitCode);
+    }
 
-  app.use(
-    koaCors({
-      origin: (context) => {
-        if (CORS_ORIGINS.indexOf(context.request.header.origin!) !== -1) {
-          return context.request.header.origin!;
+    await new Promise<void>((resolve) => {  // also better in a helper function or in logging.ts?
+      transports.forEach((transport) => {
+        // Only transports with stream support need this
+        if (typeof transport.end === 'function') {
+          transport.once('finish', () => {
+            if (--remaining === 0) resolve();
+          });
+          transport.end();
+        } else { // No `end()` method; assume it's already flushed
+          if (--remaining === 0) resolve();
         }
-        // Not a valid domain at this point, let's return the first valid as we should return a string
-        return CORS_ORIGINS[0] || '';
-      },
-      allowHeaders: ['Accept', 'Content-Type', 'Authorization'],
-      maxAge: CORS_MAX_AGE,
-    }),
-  );
+      });
+    });
 
-  app.use(bodyParser());
+    // Delay to ensure stdout/stderr flush (esp. for Console)
+    //setTimeout(() => process.exit(exitCode), 10000);
 
-  await initializeData();
+    // Let Node flush stdout/stderr (especially in slow shells)
 
-  installRest(app);
-  // je zou hier nog andere interfaces voor andere clients kunnen bij installeren die dezelfde servicelaag aanspreken
+    //await new Promise((resolve) => setTimeout(resolve, 1000));
+    process.exit(exitCode);
+  }
 
-  app.listen(9000, () => {
-    getLogger().info('🚀 Server listening on http://127.0.0.1:9000');
-  });
+  // function safeExit(code = 0, delay = 50) {
+  //   setTimeout(() => process.exit(code), delay);
+  // }
+
+  try {
+    const budgetServer: BudgetServer = await createServer();
+    await budgetServer.start();
+
+    let shuttingDown = false;
+    async function onClose(signal: NodeJS.Signals) {
+      process.stdin.resume();
+      if (shuttingDown) return;
+      shuttingDown = true;
+      //console.warn(`Received ${signal}, tying gracefull shutdown...`);
+      getLogger().warn(`Received ${signal}, trying to shutdown gracefully...`);
+
+      const timeout: NodeJS.Timeout = setTimeout(() => { // Force exit if shutdown takes too long (here: 10 seconds)
+        console.error('Shutdown taking too long. Forcing exit.');
+        getLogger().error('Shutdown taking too long. Forcing exit.');
+        //throw Error('takes too long');
+        process.exit(1);
+      }, 10 * 1000); // 10 seconds
+
+      try {
+        await budgetServer.stop();
+        clearTimeout(timeout);
+        getLogger().info('Server stopped gracefully. Goodbye! 👋');
+        //console.log('Server stopped gracefully. Goodbye.');
+        await flushLoggerAndExit(0);
+      } catch (err) {
+        getLogger().error('Error during shutdown:', err);
+        //console.error('Error during shutdown:', err);
+        await flushLoggerAndExit(1);
+      }
+    }
+
+    process.on('SIGTERM', () => onClose('SIGTERM'));
+    process.on('SIGQUIT', () => onClose('SIGQUIT'));
+    process.on('SIGINT', () => onClose('SIGINT'));
+
+  } catch (error) {
+    //console.error('error during createserver/startup...');
+    getLogger().error('error during createserver/startup...');
+    if (error instanceof Error) {
+      getLogger().error(error.stack);
+    } else {
+      getLogger().error(error);
+    };
+    //console.log('error during createserver/startup...\n', error);
+    await flushLoggerAndExit(1);
+  }
 }
 
 main();
-

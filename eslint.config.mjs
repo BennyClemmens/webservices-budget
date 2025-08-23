@@ -1,6 +1,7 @@
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import stylistic from '@stylistic/eslint-plugin';
+import jest from 'eslint-plugin-jest';
 
 export default tseslint.config(  // helper to get IntelliSense in our config
   eslint.configs.recommended, // the configs imported from eslint
@@ -39,5 +40,9 @@ export default tseslint.config(  // helper to get IntelliSense in our config
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/no-empty-object-type': 'off',  // handig voor later
     },
+  },
+  {
+    files: ['**/*.spec.ts'],
+    plugins: { jest },
   },
 );

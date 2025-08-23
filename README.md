@@ -482,3 +482,90 @@ Your database is now in sync with your schema.
 
 ✔ Generated Prisma Client (v6.14.0) to .\node_modules\@prisma\client in 35ms
 ```
+## 5. Testing
+
+```bash
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn add --dev jest supertest env-cmd ts-node ts-jest @types/jest @types/supertest
+
+
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn add --dev jest supertest env-cmd ts-node ts-jest @types/jest @types/supertest
+➤ YN0000: · Yarn 4.9.2
+➤ YN0000: ┌ Resolution step
+➤ YN0085: │ + @types/jest@npm:30.0.0, @types/supertest@npm:6.0.3, env-cmd@npm:10.1.0, jest@npm:30.0.5, supertest@npm:7.1.4, and 280 more.
+➤ YN0000: └ Completed in 3s 897ms
+➤ YN0000: ┌ Fetch step
+➤ YN0013: │ 265 packages were added to the project (+ 41.85 MiB).
+➤ YN0000: └ Completed in 8s 953ms
+➤ YN0000: ┌ Link step
+➤ YN0007: │ unrs-resolver@npm:1.11.1 must be built because it never has been before or the last one failed
+➤ YN0000: └ Completed in 1s 294ms
+➤ YN0000: · Done in 14s 205ms
+
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn migrate:test
+Loaded Prisma config from prisma.config.ts.
+
+Prisma config detected, skipping environment variable loading.
+Prisma schema loaded from src\data\schema.prisma
+Datasource "db": MySQL database "budget_test" at "localhost:3306"
+
+MySQL database budget_test created at localhost:3306
+
+Applying migration `20250816173757_init`
+Applying migration `20250816175803_init`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20250816173757_init/
+    └─ migration.sql
+  └─ 20250816175803_init/
+    └─ migration.sql
+
+Your database is now in sync with your schema.
+
+✔ Generated Prisma Client (v6.14.0) to .\node_modules\@prisma\client in 29ms
+
+
+
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn jest --init
+init:
+
+  Option "init" has been deprecated. Please use "create-jest" package as shown in the documentation: https://jestjs.io/docs/getting-started#generate-a-basic-configuration-file
+
+  CLI Options Documentation:
+  https://jestjs.io/docs/cli
+
+
+benny@FLAB2025 MINGW64 /D/DATA/GIT/WEBSERVICES/webservices-budget (main)
+$ yarn create jest
+➤ YN0000: · Yarn 4.9.2
+➤ YN0000: ┌ Resolution step
+➤ YN0085: │ + create-jest@npm:30.0.5, @ampproject/remapping@npm:2.3.0, @babel/code-frame@npm:7.27.1, @babel/compat-data@npm:7.28.0, and 320 more.
+➤ YN0000: └ Completed in 6s 708ms
+➤ YN0000: ┌ Fetch step
+➤ YN0013: │ 305 packages were added to the project (+ 43.53 MiB).
+➤ YN0000: └ Completed in 1s 357ms
+➤ YN0000: ┌ Link step
+➤ YN0007: │ unrs-resolver@npm:1.11.1 must be built because it never has been before or the last one failed
+➤ YN0000: └ Completed in 1s 269ms
+➤ YN0000: · Done in 9s 363ms
+
+
+The following questions will help Jest to create a suitable configuration for your project
+
+√ Would you like to use Jest when running "test" script in "package.json"? ... yes
+√ Would you like to use Typescript for the configuration file? ... yes
+√ Choose the test environment that will be used for testing » node
+√ Do you want Jest to add coverage reports? ... no
+√ Which provider should be used to instrument code for coverage? » v8
+√ Automatically clear mock calls, instances, contexts and results before every test? ... no
+
+✏️  Modified D:\DATA\GIT\WEBSERVICES\webservices-budget\package.json
+
+📝  Configuration file created at D:\DATA\GIT\WEBSERVICES\webservices-budget\jest.config.ts
+```
+TLDDY - too lazy, did not document yet

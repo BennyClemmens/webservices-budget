@@ -8,10 +8,15 @@
   "packageManager": "yarn@4.9.2",
   "private": true,
   "scripts": {
-    "start:dev": "tsx watch --env-file .env --inspect=127.0.0.1:9001 src/index.ts",
     "start:debug": "tsx watch --env-file .env --inspect=127.0.0.1:9001 --inspect-brk src/index.ts",
+    "start:dev": "tsx watch --env-file .env --inspect=127.0.0.1:9001 src/index.ts",
+    "start:nicedev": "yarn tsx --env-file .env src/index.ts",
     "build": "tsc",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "migrate:dev": "prisma migrate dev",
+    "migrate:test": "env-cmd -f .env.test prisma migrate dev --skip-seed",
+    "test": "env-cmd -f .env.test jest --runInBand",
+    "test:coverage": "env-cmd -f .env.test jest --runInBand --coverage"
   },
   "dependencies": {
     "@koa/cors": "^5.0.0",
@@ -27,12 +32,20 @@
     "@eslint/js": "^9.33.0",
     "@stylistic/eslint-plugin": "^5.2.3",
     "@types/config": "^3.3.5",
+    "@types/jest": "^30.0.0",
     "@types/koa": "^3.0.0",
     "@types/koa-bodyparser": "^4.3.12",
     "@types/koa__cors": "^5.0.0",
     "@types/koa__router": "^12.0.4",
     "@types/node": "^24.2.1",
+    "@types/supertest": "^6.0.3",
+    "env-cmd": "^10.1.0",
     "eslint": "^9.33.0",
+    "eslint-plugin-jest": "^29.0.1",
+    "jest": "^30.0.5",
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.4.1",
+    "ts-node": "^10.9.2",
     "tsx": "^4.20.3",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.39.0"
