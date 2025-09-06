@@ -12,29 +12,33 @@ export const prisma = new PrismaClient({
 );
 
 prisma.$on('query', (e) => {
-  getLogger().debug(`[QUERY] ${e.query} | Params: ${e.params} | Duration: ${e.duration}ms`);
+  getLogger().debug(`[PRISMA] ${e.query} | Params: ${e.params} | Duration: ${e.duration}ms`);
 });
 
 prisma.$on('info', (e) => {
-  getLogger().info(`[INFO] ${e.message}`);
+  getLogger().info(`[PRISMA] ${e.message}`);
 });
 
 prisma.$on('warn', (e) => {
-  getLogger().warn(`[WARN] ${e.message}`);
+  getLogger().warn(`[PRISMA] ${e.message}`);
 });
 
 prisma.$on('error', (e) => {
-  getLogger().error(`[ERROR] ${e.message}`);
+  getLogger().error(`[PRISMA] ${e.message}`);
 });
 
 export async function initializeData(): Promise<void> {
   getLogger().info('Initializing connection to the database');
+  getLogger().debug('> initializeData(): await prisma?.$connect();');
   await prisma.$connect();
   getLogger().info('Successfully connected to the database');
+  getLogger().debug('< initializeData()');
 }
 
 export async function shutdownData(): Promise<void> {
   getLogger().info('Shutting down database connection');
+  getLogger().debug('> shutdownData(): await prisma?.$disconnect();');
   await prisma?.$disconnect();
-  getLogger().info('Database connection closed');
+  getLogger().info('Database connection closed succesfully');
+  getLogger().debug('< shutdownData()');
 }

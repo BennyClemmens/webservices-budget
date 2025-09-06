@@ -1,0 +1,23 @@
+import koaCors from '@koa/cors';
+import config from 'config';
+import type { KoaApplication } from '../../types/koa';
+
+const CORS_ORIGINS = config.get<string[]>('cors.origins');
+const CORS_MAX_AGE = config.get<number>('cors.maxAge');
+
+export default function installCors(app: KoaApplication) {
+  app.use(
+    koaCors({
+      origin: (context) => {
+        if (CORS_ORIGINS.indexOf(context.request.header.origin!) !== -1) {
+          return context.request.header.origin!;
+        }
+        // Not a valid domain at this point, let's return the first valid as we should return a string
+        //return CORS_ORIGINS[0] || '';
+        return '';
+      },
+      allowHeaders: ['Accept', 'Content-Type', 'Authorization'],
+      maxAge: CORS_MAX_AGE,
+    }),
+  );
+}

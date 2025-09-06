@@ -19,18 +19,28 @@ export default async function createServer(): Promise<BudgetServer> {
     },
 
     start() {
-      return new Promise<void>((resolve) => {
-        app.listen(9000, () => {
+      return new Promise<void>((resolve, reject) => {
+        getLogger().debug('> createServer.start()');
+        
+        const budgetServer = app.listen(9000, () => {
           getLogger().info('🚀 Server listening on http://localhost:9000');
+          getLogger().debug('< resolving createServer.start()');
           resolve();
+        });
+
+        budgetServer.on('error', (err) => {
+          getLogger().error('❌ Failed to start server on http://localhost:9000');
+          reject(err); // afgehandeld in src/index.ts
         });
       });
     },
 
     async stop() {
+      getLogger().debug('> createServer.stop(): app.removeAllListeners();');
       app.removeAllListeners();
+      getLogger().debug('> createServer.stop(): await shutdownData();');
       await shutdownData();
-      //getLogger().info('Goodbye! 👋');
+      getLogger().debug('< createServer.stop()');
     },
   };
 
