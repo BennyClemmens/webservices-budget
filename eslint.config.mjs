@@ -6,7 +6,9 @@ import jest from 'eslint-plugin-jest';
 export default tseslint.config(  // helper to get IntelliSense in our config
   eslint.configs.recommended, // the configs imported from eslint
   ...tseslint.configs.recommended, // idem for eslint, eg tto read .ts
-  {ignores: ["build/**"]}, // source: https://github.com/eslint/eslint/discussions/18304
+  {ignores: [ // source: https://github.com/eslint/eslint/discussions/18304
+    "build/**",
+    "src/**/*.js"]},
   { // our own config ...
     files: ['**/*.ts', '**/*.spec.ts'],  // wat te linten
     plugins: {  // extra functionaliteiten in eslint via plugins
@@ -22,6 +24,7 @@ export default tseslint.config(  // helper to get IntelliSense in our config
         },
       ],
       '@stylistic/indent': ['error', 2, { SwitchCase: 1 }],
+      '@stylistic/linebreak-style': ['error', 'unix'],
       '@stylistic/quotes': ['error', 'single'],
       '@stylistic/semi': ['error', 'always'],
       '@stylistic/comma-dangle': ['error', 'always-multiline'],
@@ -42,7 +45,8 @@ export default tseslint.config(  // helper to get IntelliSense in our config
     },
   },
   {
-    files: ['**/*.spec.ts'],
+    // files: ['**/*.spec.ts'],
+    files: ['**/__tests_/**/*.spec.ts'],
     plugins: { jest },
   },
 );

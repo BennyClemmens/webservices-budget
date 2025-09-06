@@ -19,6 +19,7 @@ import type { Place } from '../types/place';
 const getAllPlaces = async (ctx: KoaContext<GetAllPlacesResponse>) => {
   getLogger().debug(`${ctx.request.method} ${ctx.request.url}`);
   const places: Place[] = await placeService.getAll();
+  ctx.status = 200;
   ctx.body = {
     items: places,
   };
@@ -26,11 +27,13 @@ const getAllPlaces = async (ctx: KoaContext<GetAllPlacesResponse>) => {
 
 const getPlaceById = async (ctx: KoaContext<GetPlaceByIdResponse, IdParams>) => {
   const place = await placeService.getById(Number(ctx.params.id));
+  ctx.status = 200;
   ctx.body = place;
 };
 
 const getTransactionsByPlaceId = async (context: KoaContext<getTransactionsByPlaceIdResponse,IdParams>) => {
   const transactions = await transactionService.getTransactionsByPlaceId(Number(context.params.id));
+  context.status = 200;
   context.body = {
     items: transactions,
   };
@@ -44,8 +47,8 @@ const createPlace = async (ctx: KoaContext<CreatePlaceResponse, void, CreatePlac
 
 const updatePlaceById = async (ctx: KoaContext<UpdatePlaceResponse, IdParams, UpdatePlaceRequest>) => {
   const place = await placeService.updateById(Number(ctx.params.id), ctx.request.body);
+  ctx.status = 200;
   ctx.body = place;
-  // status?
 };
 
 const deletePlaceById = async (ctx: KoaContext<void, IdParams>) => {

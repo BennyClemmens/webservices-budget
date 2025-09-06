@@ -1,8 +1,8 @@
 import { prisma } from '../data';
-import { getLogger } from '../core/logging';
-import { Prisma } from '@prisma/client';
-import { NotFoundError } from '../core/NotFoundError';
-import type { Place } from '../types/place';
+// import { getLogger } from '../core/logging';
+// import { Prisma } from '@prisma/client';
+// import { NotFoundError } from '../core/NotFoundError';
+import type { GetPlaceByIdResponse, Place } from '../types/place';
 import type { PlaceCreateInput } from '../types/place';
 import type { PlaceUpdateInput } from '../types/place';
 // import type { Entity } from '../types/common';
@@ -44,40 +44,35 @@ export const getAll = async (): Promise<Place[]> => {
  * @param id - The ID of the place to retrieve.
  * @returns The place object if found, otherwise throws an error.
  */
-export const getById = async (id: number): Promise<Place> => {
-  try {
-    const place: Place = await prisma.place.findUniqueOrThrow({
-      // select: PLACE_SELECT,
-      where: {
-        id,
-      },
-      //include: PLACE_INCLUDE,
-      include: {
-        // _count: true,
-        transactions: {
-          select: {
-            id: true,
-            amount: true,
-            date: true,
-            place: true,
-            user: true,
-            // {
-            //   omit: {
-            //     id: true,
-            //   },
-            // },
-          },
+export const getById = async (id: number): Promise<GetPlaceByIdResponse> => {
+  const place: GetPlaceByIdResponse|null = await prisma.place.findUnique({
+    // select: PLACE_SELECT,
+    where: {
+      id,
+    },
+    //include: PLACE_INCLUDE,
+    include: {
+      // _count: true,
+      transactions: {
+        select: {
+          id: true,
+          amount: true,
+          date: true,
+          place: true,
+          user: true,
+          // {
+          //   omit: {
+          //     id: true,
+          //   },
+          // },
         },
       },
-    });
-    getLogger().debug(`${JSON.stringify(place)}`);
-    return place;
-  } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') { // specific Prisma error
-      throw new NotFoundError(`There is no place with id ${id}`);
-    }
-    throw error; // Re-throw other unexpected errors
-  }
+    },
+  });
+  if (!place)
+    throw new Error(`There is no transaction with id ${id}`);
+  //getLogger().debug(`${JSON.stringify(place)}`);
+  return place;
 };
 
 // export const create = async ({ name, rating }: PlaceCreateInput): Promise<Place> => {
@@ -119,4 +114,5 @@ export const deleteById = async (id: number): Promise<void> => {
     },
   });
   // error handling later, no return
+  // kan mis gaan als de foreign key constraints niet zijn gerespecteerd ...
 };

@@ -1,4 +1,5 @@
 import type { Entity, ListResponse } from './common';
+import type { Transaction } from './transaction';
 
 export interface Place extends Entity {
   name: string;
@@ -21,7 +22,9 @@ export interface CreatePlaceRequest extends PlaceCreateInput {}
 export interface UpdatePlaceRequest extends PlaceUpdateInput {}
 //responses (none for the delete)
 export interface GetAllPlacesResponse extends ListResponse<Place> {}
-export interface GetPlaceByIdResponse extends Place {}
-export interface CreatePlaceResponse extends GetPlaceByIdResponse {} // or Place {}
-export interface UpdatePlaceResponse extends GetPlaceByIdResponse {} // or Place {}
+export interface GetPlaceByIdResponse extends Place {
+  transactions: Transaction[];
+}
+export interface CreatePlaceResponse extends Place {}
+export interface UpdatePlaceResponse extends Place {}
 // afhankelijk van wat ze terug geven van relaties ...

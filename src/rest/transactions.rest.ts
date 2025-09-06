@@ -32,6 +32,7 @@ const createTransaction = async (context: KoaContext<CreateTransactionResponse, 
     userId: Number(context.request.body.userId), // temp solution untill validation
   });
   context.body = newTransaction; // zodat gebruiker het resultaat ziet ...
+  context.status = 201;
 };
 
 const updateTransactionById = async (
