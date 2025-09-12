@@ -47,6 +47,11 @@ export const TESTDATA: {
         name: 'Test place',
         rating: 3,
       },
+      {
+        id: 2,
+        name: 'Benzine',
+        rating: 2,
+      },
     ],
     u: [
       {

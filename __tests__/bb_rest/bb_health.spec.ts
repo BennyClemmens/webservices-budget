@@ -26,6 +26,16 @@ describe('Health', () => {
       expect(response.statusCode).toBe(200);
       expect(response.body).toEqual({ pong: true });
     });
+
+    it('should 400 with unknown query parameters', async () => {
+      const response = await request.get(`${url}?invalid=true`);
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.query).toHaveProperty('invalid');
+    });
+
+    // possibility: empty body ...
   });
 
   describe('GET /api/health/version', () => {
@@ -41,5 +51,14 @@ describe('Health', () => {
         name: packageJson.name,
       });
     });
+
+    it('should 400 with unknown query parameters', async () => {
+      const response = await request.get(`${url}?invalid=true`);
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.query).toHaveProperty('invalid');
+    });
+    
   });
 });

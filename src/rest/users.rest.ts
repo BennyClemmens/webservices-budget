@@ -13,6 +13,8 @@ import type {
 } from '../types/user';
 import type { getTransactionsByUserIdResponse } from '../types/transaction';
 import type { IdParams } from '../types/common';
+import Joi from 'joi';
+import validate from '../core/validation';
 
 const getAllUsers = async (ctx: KoaContext<GetAllUsersResponse>) => {
   const users = await userService.getAll();
@@ -20,36 +22,65 @@ const getAllUsers = async (ctx: KoaContext<GetAllUsersResponse>) => {
     items: users,
   };
 };
+getAllUsers.validationScheme = null;
 
 const getUserById = async (ctx: KoaContext<GetUserByIdResponse, IdParams>) => {
-  const user = await userService.getById(Number(ctx.params.id));
+  const user = await userService.getById(ctx.params.id);
   ctx.status = 200;
   ctx.body = user;
 };
+getUserById.validationScheme = {
+  params: {
+    id: [Joi.number().integer().positive(), 'me'],
+  },
+};
 
 const getTransactionsByUserId = async (context: KoaContext<getTransactionsByUserIdResponse,IdParams>) => {
-  const transactions = await transactionService.getTransactionsByUserId(Number(context.params.id));
+  const transactions = await transactionService.getTransactionsByUserId(context.params.id);
   context.body = {
     items: transactions,
   };
 };
+getTransactionsByUserId.validationScheme = {
+  params: {
+    id: Joi.number().integer().positive(),
+  },
+};
 
 const createUser = async (ctx: KoaContext<CreateUserResponse, void, CreateUserRequest>) => {
-  const user = await userService.create(ctx.request.body!);
+  const user = await userService.create(ctx.request.body);
   ctx.status = 201;
   ctx.body = user;
 };
+createUser.validationScheme = {
+  body: {
+    name: Joi.string().max(255),
+    surname: Joi.string().max(255),
+  },
+};
 
 const updateUserById = async (ctx: KoaContext<UpdateUserResponse, IdParams, UpdateUserRequest>) => {
-  const user = await userService.updateById(Number(ctx.params.id), ctx.request.body!);
+  const user = await userService.updateById(ctx.params.id, ctx.request.body!);
   ctx.body = user;
   ctx.status = 200;
   // status?
 };
+updateUserById.validationScheme = {
+  params: { id: Joi.number().integer().positive() },
+  body: {
+    name: Joi.string().max(255),
+    surname: Joi.string().max(255),
+  },
+};
 
 const deleteUserById = async (ctx: KoaContext<void, IdParams>) => {
-  await userService.deleteById(Number(ctx.params.id));
+  await userService.deleteById(ctx.params.id);
   ctx.status = 204;
+};
+deleteUserById.validationScheme = {
+  params: {
+    id: Joi.number().integer().positive(),
+  },
 };
 
 export default (parent: KoaRouter) => {
@@ -57,12 +88,12 @@ export default (parent: KoaRouter) => {
     prefix: '/users',
   });
 
-  router.get('/', getAllUsers);
-  router.get('/:id', getUserById);
-  router.get('/:id/transactions', getTransactionsByUserId);
-  router.post('/', createUser);
-  router.put('/:id', updateUserById);
-  router.delete('/:id', deleteUserById);
+  router.get('/', validate(getAllUsers.validationScheme), getAllUsers);
+  router.get('/:id', validate(getUserById.validationScheme), getUserById);
+  router.get('/:id/transactions', validate(getTransactionsByUserId.validationScheme), getTransactionsByUserId);
+  router.post('/', validate(createUser.validationScheme), createUser);
+  router.put('/:id', validate(updateUserById.validationScheme), updateUserById);
+  router.delete('/:id', validate(deleteUserById.validationScheme), deleteUserById);
 
   parent.use(router.routes()).use(router.allowedMethods());
 };

@@ -48,17 +48,26 @@ createTransaction.validationScheme = {
 
 const updateTransactionById = async (
   context: KoaContext<UpdateTransactionResponse, IdParams, UpdateTransactionRequest>) => {
-  context.body = await transactionService.updateById(Number(context.params.id), {
-    ...context.request.body,
-    date: new Date(context.request.body.date),
-    placeId: Number(context.request.body.placeId),
-    userId: Number(context.request.body.userId),
-  });
+  context.body = await transactionService.updateById(context.params.id, context.request.body);
+};
+updateTransactionById.validationScheme = {
+  params: { id: Joi.number().integer().positive() },
+  body: {
+    amount: Joi.number().invalid(0),
+    date: Joi.date().iso().less('now'),
+    placeId: Joi.number().integer().positive(),
+    userId: Joi.number().integer().positive(),
+  },
 };
 
 const deleteTransactionById = async (context: KoaContext<void, IdParams>) => {
-  await transactionService.deleteById(Number(context.params.id));
+  await transactionService.deleteById(context.params.id);
   context.status = 204;
+};
+deleteTransactionById.validationScheme = {
+  params: {
+    id: Joi.number().integer().positive(),
+  },
 };
 
 export default (parent: KoaRouter) => {
@@ -69,9 +78,8 @@ export default (parent: KoaRouter) => {
   router.get('/', validate(getAllTransactions.validationScheme), getAllTransactions);
   router.get('/:id', validate(getTransactionById.validationScheme), getTransactionById);
   router.post('/', validate(createTransaction.validationScheme), createTransaction);
-  router.put('/:id', updateTransactionById);
-  router.delete('/:id', deleteTransactionById);
+  router.put('/:id', validate(updateTransactionById.validationScheme), updateTransactionById);
+  router.delete('/:id', validate(deleteTransactionById.validationScheme),deleteTransactionById);
 
-  //hang mijn router onder de parent
   parent.use(router.routes()).use(router.allowedMethods());
 };

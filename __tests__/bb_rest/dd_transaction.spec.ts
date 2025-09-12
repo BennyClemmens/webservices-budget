@@ -174,6 +174,14 @@ describe('Transactions suite', () => {
       expect(tx?.user_id).toBe(firstUserId);
     });
 
+    it('should 400 when given an argument', async () => {
+      const response = await request.get(`${url}?invalid=true`);
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.query).toHaveProperty('invalid');
+    });
+
   });
 
   describe(`GET ${url}/:id`, () => {
@@ -217,6 +225,25 @@ describe('Transactions suite', () => {
   // TODO: NA validatie:
   // testen of de statuscode 404 is als de transactie niet bestaat
   // testen of de statuscode 400 is als de id geen nummer is
+
+  it('should 404 when requesting not existing transaction', async () => {
+    const response = await request.get(`${url}/200`);
+
+    expect(response.statusCode).toBe(404);
+    expect(response.body).toMatchObject({
+      code: 'NOT_FOUND',
+      message: 'No transaction with this id 200 exists',
+    });
+    expect(response.body.stack).toBeTruthy();
+  });
+
+  it('should 400 with invalid transaction id', async () => {
+    const response = await request.get(`${url}/invalid`);
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body.code).toBe('VALIDATION_FAILED');
+    expect(response.body.details.params).toHaveProperty('id');
+  });
 
   describe('POST /api/transactions', () => {
     //const transactionsToDelete: number[] = [];
@@ -275,6 +302,59 @@ describe('Transactions suite', () => {
     });
 
     // it should have been added as a user in the database?
+
+    it('should 404 when place does not exist', async () => {
+      const response = await request.post(url)
+        .send({
+          amount: -125,
+          date: '2021-05-27T13:00:00.000Z',
+          placeId: 123,
+          userId: 1,
+        });
+
+      expect(response.statusCode).toBe(404);
+      expect(response.body).toMatchObject({
+        code: 'NOT_FOUND',
+        message: 'No place with this id exists',
+      });
+      expect(response.body.stack).toBeTruthy();
+    });
+
+    it('should 400 when missing amount', async () => {
+      const response = await request.post(url)
+        .send({
+          date: '2021-05-27T13:00:00.000Z',
+          placeId: 4,
+        });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.body).toHaveProperty('amount');
+    });
+
+    it('should 400 when missing date', async () => {
+      const response = await request.post(url)
+        .send({
+          amount: 102,
+          placeId: 4,
+        });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.body).toHaveProperty('date');
+    });
+
+    it('should 400 when missing placeId', async () => {
+      const response = await request.post(url)
+        .send({
+          amount: 102,
+          date: '2021-05-27T13:00:00.000Z',
+        });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.body).toHaveProperty('placeId');
+    });
     
   });
 
@@ -322,6 +402,79 @@ describe('Transactions suite', () => {
       // });
       expect(response.body.user).toEqual(testuser);
     });
+
+    it('should 404 when updating not existing transaction', async () => {
+      const response = await request.put(`${url}/200`)
+        .send({
+          amount: -125,
+          date: '2021-05-27T13:00:00.000Z',
+          placeId: 1,
+          userId: 1,
+        });
+
+      expect(response.statusCode).toBe(404);
+      expect(response.body).toMatchObject({
+        code: 'NOT_FOUND',
+        message: 'No transaction with this id exists',
+      });
+      expect(response.body.stack).toBeTruthy();
+    });
+
+    it('should 404 when place does not exist', async () => {
+      const response = await request.put(`${url}/2`)
+        .send({
+          amount: -125,
+          date: '2021-05-27T13:00:00.000Z',
+          placeId: 123,
+          userId: 1,
+        });
+
+      expect(response.statusCode).toBe(404);
+      expect(response.body).toMatchObject({
+        code: 'NOT_FOUND',
+        message: 'No place with this id exists',
+      });
+      expect(response.body.stack).toBeTruthy();
+    });
+
+    it('should 400 when missing amount', async () => {
+      const response = await request.put(`${url}/4`)
+        .send({
+          date: '2021-05-27T13:00:00.000Z',
+          placeId: 1,
+          userId: 1,
+        });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.body).toHaveProperty('amount');
+    });
+
+    it('should 400 when missing date', async () => {
+      const response = await request.put(`${url}/4`)
+        .send({
+          amount: 102,
+          placeId: 1,
+          userId: 1,
+        });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.body).toHaveProperty('date');
+    });
+
+    it('should 400 when missing placeId', async () => {
+      const response = await request.put(`${url}/4`)
+        .send({
+          amount: 102,
+          date: '2021-05-27T13:00:00.000Z',
+          userId: 1,
+        });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.body).toHaveProperty('placeId');
+    });
   });
 
   // TODO na validatie
@@ -352,6 +505,25 @@ describe('Transactions suite', () => {
 
       const countAfterDelete = await prisma.transaction.count();
       expect(countAfterDelete).toBe(2);
+    });
+
+    it('should 404 with not existing place', async () => {
+      const response = await request.delete(`${url}/4`);
+
+      expect(response.statusCode).toBe(404);
+      expect(response.body).toMatchObject({
+        code: 'NOT_FOUND',
+        message: 'No transaction with this id exists',
+      });
+      expect(response.body.stack).toBeTruthy();
+    });
+
+    it('should 400 with invalid transaction id', async () => {
+      const response = await request.get(`${url}/invalid`);
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.params).toHaveProperty('id');
     });
   });
 

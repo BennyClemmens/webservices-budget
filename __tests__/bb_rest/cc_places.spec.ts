@@ -52,6 +52,14 @@ describe('Places suite', () => {
         expect.arrayContaining(TESTDATA.p),
       );
     });
+
+    it('should 400 when given an argument', async () => {
+      const response = await request.get(`${url}?invalid=true`);
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.query).toHaveProperty('invalid');
+    });
   });
 
   describe(`GET ${url}/:id`, () => {
@@ -99,6 +107,27 @@ describe('Places suite', () => {
       });
 
     });
+
+    it('should 404 when requesting not existing place', async () => {
+      const response = await request.get(`${url}/200`);
+
+      expect(response.statusCode).toBe(404);
+
+      expect(response.body).toMatchObject({
+        code: 'NOT_FOUND',
+        message: 'There is no place with id 200',
+      });
+
+      expect(response.body.stack).toBeTruthy();
+    });
+
+    it('should 400 with invalid place id', async () => {
+      const response = await request.get(`${url}/invalid`);
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.params).toHaveProperty('id');
+    });
   });  
 
   describe(`POST ${url}`, () => {
@@ -135,6 +164,63 @@ describe('Places suite', () => {
       expect(check.body.rating).toEqual(placeToInsert.rating);
       expect(check.body.transactions).toEqual([]);
     });
+
+    it('should 400 for duplicate place name', async () => {
+      const response = await request.post(url)
+        .send({ name: 'Lovely place' });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body).toMatchObject({
+        code: 'VALIDATION_FAILED',
+        message: 'A place with this name already exists',
+      });
+      expect(response.body.stack).toBeTruthy();
+    });
+
+    it('should 400 when missing name', async () => {
+      const response = await request.post(url)
+        .send({ rating: 3 });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.body).toHaveProperty('name');
+    });
+
+    it('should 400 when rating lower than one', async () => {
+      const response = await request.post(url)
+        .send({
+          name: 'The wrong place',
+          rating: 0,
+        });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.body).toHaveProperty('rating');
+    });
+
+    it('should 400 when rating higher than five', async () => {
+      const response = await request.post(url)
+        .send({
+          name: 'The wrong place',
+          rating: 6,
+        });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.body).toHaveProperty('rating');
+    });
+
+    it('should 400 when rating is a decimal', async () => {
+      const response = await request.post(url)
+        .send({
+          name: 'The wrong place',
+          rating: 3.5,
+        });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.body).toHaveProperty('rating');
+    });
   });
 
   describe('PUT /api/places/:id', () => {
@@ -169,11 +255,79 @@ describe('Places suite', () => {
       });
 
       const check = await request.get(`${url}/${pId}`);
-      // console.log(check.body);
       expect(check.statusCode).toBe(200);
       expect(check.body.id).toEqual(pId);
       expect(check.body.name).toEqual(placeToUpdate.name);
       expect(check.body.rating).toEqual(placeToUpdate.rating);
+    });
+
+    it('should 400 for duplicate place name', async () => {
+      const response = await request.put(`${url}/2`)
+        .send({
+          name: 'Changed name',
+          rating: 3,
+        });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body).toMatchObject({
+        code: 'VALIDATION_FAILED',
+        message: 'A place with this name already exists',
+      });
+      expect(response.body.stack).toBeTruthy();
+    });
+
+    it('should 400 when missing name', async () => {
+      const response = await request.put(`${url}/1`)
+        .send({ rating: 3 });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.body).toHaveProperty('name');
+    });
+
+    it('should 400 when missing rating', async () => {
+      const response = await request.put(`${url}/1`)
+        .send({ name: 'The name' });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.body).toHaveProperty('rating');
+    });
+
+    it('should 400 when rating lower than one', async () => {
+      const response = await request.put(`${url}/1`)
+        .send({
+          name: 'The wrong place',
+          rating: 0,
+        });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.body).toHaveProperty('rating');
+    });
+
+    it('should 400 when rating higher than five', async () => {
+      const response = await request.put(`${url}/1`)
+        .send({
+          name: 'The wrong place',
+          rating: 6,
+        });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.body).toHaveProperty('rating');
+    });
+
+    it('should 400 when rating is a decimal', async () => {
+      const response = await request.put(`${url}/1`)
+        .send({
+          name: 'The wrong place',
+          rating: 3.5,
+        });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.body).toHaveProperty('rating');
     });
   });
 
@@ -202,6 +356,25 @@ describe('Places suite', () => {
       //TODO
       //check if getbyid this id gets 404 (or nothing?)
       //error for constraint!
+    });
+
+    it('should 404 with not existing place', async () => {
+      const response = await request.delete(`${url}/200`);
+
+      expect(response.statusCode).toBe(404);
+      expect(response.body).toMatchObject({
+        code: 'NOT_FOUND',
+        message: 'No place with this id exists',
+      });
+      expect(response.body.stack).toBeTruthy();
+    });
+
+    it('should 400 with invalid place id', async () => {
+      const response = await request.delete(`${url}/invalid`);
+
+      expect(response.statusCode).toBe(400);
+      expect(response.body.code).toBe('VALIDATION_FAILED');
+      expect(response.body.details.params).toHaveProperty('id');
     });
   });
 
@@ -252,5 +425,13 @@ describe('Places suite', () => {
   //       },
   //     }]));
   //   });
+  // });
+
+  //   it('should 400 with invalid place id', async () => {
+  //   const response = await request.get(`${url}/invalid/transactions`);
+
+  //   expect(response.statusCode).toBe(400);
+  //   expect(response.body.code).toBe('VALIDATION_FAILED');
+  //   expect(response.body.details.params).toHaveProperty('id');
   // });
 });

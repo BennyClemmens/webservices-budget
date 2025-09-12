@@ -1,4 +1,6 @@
+import ServiceError from '../core/serviceError';
 import { prisma } from '../data';
+import handleDBError from '../data/_handle_DBError';
 // import { getLogger } from '../core/logging';
 // import { Prisma } from '@prisma/client';
 // import { NotFoundError } from '../core/NotFoundError';
@@ -70,17 +72,23 @@ export const getById = async (id: number): Promise<GetPlaceByIdResponse> => {
     },
   });
   if (!place)
-    throw new Error(`There is no transaction with id ${id}`);
+    throw ServiceError.notFound(`There is no place with id ${id}`);
   //getLogger().debug(`${JSON.stringify(place)}`);
   return place;
 };
 
 // export const create = async ({ name, rating }: PlaceCreateInput): Promise<Place> => {
 export const create = async (placeInput: PlaceCreateInput): Promise<Place> => {
-  const place: Place = await prisma.place.create({
-    data: placeInput,
-  });
-  return place;
+  let place: Place;
+  try {
+    place = await prisma.place.create({
+      data: placeInput,
+    });
+    return place;
+  } catch (error) {
+    //console.log(error);
+    throw handleDBError(error);
+  }
   
   // const maxId = Math.max(...PLACES.map((i) => i.id));
   // const newPlace = { // objec literal !
@@ -97,22 +105,40 @@ export const updateById = async (
   placeUpdate: PlaceUpdateInput,
   // {id, name, rating }: Place,
 ): Promise<Place> => {
-  const place: Place = await prisma.place.update({
-    where: {
-      id,
-    },
-    data: placeUpdate,
-  });
-  return place;
-  // error handling: later
+  let place: Place;
+  try {
+    place = await prisma.place.update({
+      where: {
+        id,
+      },
+      data: placeUpdate,
+    });
+    return place;
+  } catch (error) {
+    throw handleDBError(error);
+  }
 };
 
 export const deleteById = async (id: number): Promise<void> => {
-  await prisma.place.delete({
+  try {
+    await prisma.place.delete({
+      where: {
+        id,
+      },
+    });
+  } catch (error) {
+    throw handleDBError(error);
+  }
+};
+
+export const checkPlaceExists = async (id: number) => {
+  const count = await prisma.place.count({
     where: {
       id,
     },
   });
-  // error handling later, no return
-  // kan mis gaan als de foreign key constraints niet zijn gerespecteerd ...
+
+  if (!count) {
+    throw  ServiceError.notFound('No place with this id exists');
+  }
 };
