@@ -11,6 +11,8 @@ import type {
   UpdateTransactionResponse,
 } from '../types/transaction';
 import type { IdParams } from '../types/common';
+import Joi from 'joi';
+import validate from '../core/validation';
 
 const getAllTransactions = async (context: KoaContext<GetAllTransactionsReponse>) => {
   context.body = {
@@ -18,21 +20,30 @@ const getAllTransactions = async (context: KoaContext<GetAllTransactionsReponse>
     // perhaps check pagination as an extra ...
   };
 };
+getAllTransactions.validationScheme = null;
 
 const getTransactionById = async (context: KoaContext<GetTransactionByIdResponse, IdParams>) => {
-  context.body = await transactionService.getById(Number(context.params.id));
+  context.body = await transactionService.getById(context.params.id);
   // 204 no content if not found...
+};
+getTransactionById.validationScheme = {
+  params: {
+    id: Joi.number().integer().positive(),
+  },
 };
 
 const createTransaction = async (context: KoaContext<CreateTransactionResponse, void, CreateTransactionRequest>) => {
-  const newTransaction = await transactionService.create({
-    ...context.request.body, // hierin zit de transaction (amount?)
-    date: new Date(context.request.body.date),
-    placeId: Number(context.request.body.placeId), // temp solution untill validation
-    userId: Number(context.request.body.userId), // temp solution untill validation
-  });
+  const newTransaction = await transactionService.create(context.request.body);
   context.body = newTransaction; // zodat gebruiker het resultaat ziet ...
   context.status = 201;
+};
+createTransaction.validationScheme = {
+  body: {
+    amount: Joi.number().invalid(0),
+    date: Joi.date().iso().less('now'),
+    placeId: Joi.number().integer().positive(),
+    userId: Joi.number().integer().positive(),
+  },
 };
 
 const updateTransactionById = async (
@@ -55,9 +66,9 @@ export default (parent: KoaRouter) => {
     prefix: '/transactions',
   });
 
-  router.get('/', getAllTransactions);
-  router.get('/:id', getTransactionById);
-  router.post('/', createTransaction);
+  router.get('/', validate(getAllTransactions.validationScheme), getAllTransactions);
+  router.get('/:id', validate(getTransactionById.validationScheme), getTransactionById);
+  router.post('/', validate(createTransaction.validationScheme), createTransaction);
   router.put('/:id', updateTransactionById);
   router.delete('/:id', deleteTransactionById);
 
