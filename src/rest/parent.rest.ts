@@ -4,6 +4,7 @@ import installHealthRouter from './health.rest';
 import installTransactionsRouter from './transactions.rest';
 import installPlacesRouter from './places.rest';
 import installUsersRouter from './users.rest';
+import installSessionsRouter from './session.rest';
 
 export default (app: KoaApplication) => {
   const parentRouter = new Router<BudgetAppState, BudgetAppContext>({
@@ -14,6 +15,7 @@ export default (app: KoaApplication) => {
   installTransactionsRouter(parentRouter);
   installPlacesRouter(parentRouter);
   installUsersRouter(parentRouter);
+  installSessionsRouter(parentRouter);
   
   app.use(parentRouter.routes())
     .use(parentRouter.allowedMethods());

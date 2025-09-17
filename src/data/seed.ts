@@ -1,26 +1,39 @@
 import { PrismaClient } from '@prisma/client';
+import { hashPassword } from '../core/password';
+import Role from '../core/roles';
 
 const prisma = new PrismaClient();
 
 async function main() {
   // Seed users
   // ==========
+  const passwordHash = await hashPassword('12345678');
+   
   await prisma.user.createMany({
     data: [
       {
         id: 1,
         name: 'Thomas',
         surname: 'Aelbrecht',
+        email: 'thomas.aelbrecht@hogent.be',
+        password_hash: passwordHash,
+        roles: JSON.stringify([Role.ADMIN, Role.USER]),
       },
       {
         id: 2,
         name: 'Pieter ',
         surname: 'Van Der Helst',
+        email: 'pieter.vanderhelst@hogent.be',
+        password_hash: passwordHash,
+        roles: JSON.stringify([Role.USER]),
       },
       {
         id: 3,
         name: 'Karine ',
         surname: 'Samyn',
+        email: 'karine.samyn@hogent.be',
+        password_hash: passwordHash,
+        roles: JSON.stringify([Role.USER]),
       },
     ],
   });

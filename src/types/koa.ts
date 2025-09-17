@@ -1,10 +1,12 @@
 import type { ParameterizedContext } from 'koa';
 import type Application from 'koa';
 import type Router from '@koa/router';
+import type { SessionInfo } from './auth';
 
 export interface BudgetAppState {
   //later: session information (chapter 7)
   //who is logged on and such
+  session : SessionInfo;
 }
 
 export interface BudgetAppContext<
@@ -26,7 +28,7 @@ export interface KoaApplication extends Application<BudgetAppState, BudgetAppCon
 //similar: a type for the router, with our own state and context
 export interface KoaRouter extends Router<BudgetAppState, BudgetAppContext> {}
 
-//een eigen koa context type
+//een eigen koa context type (reeds aangepast voor chapter 7??)
 export type KoaContext<
   ResponseBody = unknown,
   P = unknown,

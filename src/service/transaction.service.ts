@@ -6,6 +6,7 @@ import type { Transaction, TransactionCreateInput, TransactionUpdateInput } from
 // import type { User } from '../types/user';
 import ServiceError from '../core/serviceError';
 import handleDBError from '../data/_handle_DBError';
+import Role from '../core/roles';
 
 const TRANSACTION_SELECT = {
   id: true,
@@ -26,17 +27,20 @@ const TRANSACTION_SELECT = {
   },
 };
 
-export const getAll = async (): Promise<Transaction[]> => {
+export const getAll = async (userId: number, roles: string[]): Promise<Transaction[]> => {
   const transactions: Transaction[] =  await prisma.transaction.findMany({
+    where: roles.includes(Role.ADMIN) ? {} : { user_id: userId },
     select: TRANSACTION_SELECT,
   });
   return transactions;
 };
 
-export const getById = async (id: number): Promise<Transaction> => {
+export const getById = async (id: number, userId: number, roles: string[]): Promise<Transaction> => {
+  const extraFilter = roles.includes(Role.ADMIN) ? {} : { user_id: userId };
   const transaction: Transaction | null = await prisma.transaction.findUnique({
     where: {
       id,
+      ...extraFilter,
     },
     select: TRANSACTION_SELECT,
   });
@@ -95,11 +99,12 @@ export const updateById = async (
   }
 };
 
-export const deleteById = async (id: number): Promise<void> => {
+export const deleteById = async (id: number, userId: number): Promise<void> => {
   try {
     await prisma.transaction.delete({
       where: {
         id,
+        user_id: userId,
       },
     });
   } catch (error) {
@@ -107,12 +112,11 @@ export const deleteById = async (id: number): Promise<void> => {
   }
 };
 
-export const getTransactionsByPlaceId = async (placeId: number): Promise<Transaction[]> => {
+export const getTransactionsByPlaceId = async (placeId: number, userId: number): Promise<Transaction[]> => {
   const transactions: Transaction[] = await prisma.transaction.findMany({
     where: {
-      AND: [
-        {place_id: placeId},
-      ],
+      user_id: userId,
+      place_id: placeId,
     },
     select: TRANSACTION_SELECT,
   });

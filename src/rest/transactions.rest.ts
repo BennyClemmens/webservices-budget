@@ -13,17 +13,25 @@ import type {
 import type { IdParams } from '../types/common';
 import Joi from 'joi';
 import validate from '../core/validation';
+import { requireAuthentication } from '../core/auth';
 
 const getAllTransactions = async (context: KoaContext<GetAllTransactionsReponse>) => {
   context.body = {
-    items: await transactionService.getAll(), // geen arrays returnen in http response!
+    items: await transactionService.getAll(
+      context.state.session.userId,
+      context.state.session.roles,
+    ), // geen arrays returnen in http response!
     // perhaps check pagination as an extra ...
   };
 };
 getAllTransactions.validationScheme = null;
 
 const getTransactionById = async (context: KoaContext<GetTransactionByIdResponse, IdParams>) => {
-  context.body = await transactionService.getById(context.params.id);
+  context.body = await transactionService.getById(
+    context.params.id,
+    context.state.session.userId,
+    context.state.session.roles,
+  );
   // 204 no content if not found...
 };
 getTransactionById.validationScheme = {
@@ -33,7 +41,10 @@ getTransactionById.validationScheme = {
 };
 
 const createTransaction = async (context: KoaContext<CreateTransactionResponse, void, CreateTransactionRequest>) => {
-  const newTransaction = await transactionService.create(context.request.body);
+  const newTransaction = await transactionService.create({
+    ...context.request.body,
+    userId: context.state.session.userId,
+  });
   context.body = newTransaction; // zodat gebruiker het resultaat ziet ...
   context.status = 201;
 };
@@ -42,13 +53,19 @@ createTransaction.validationScheme = {
     amount: Joi.number().invalid(0),
     date: Joi.date().iso().less('now'),
     placeId: Joi.number().integer().positive(),
-    userId: Joi.number().integer().positive(),
+    //userId: Joi.number().integer().positive(),
   },
 };
 
 const updateTransactionById = async (
   context: KoaContext<UpdateTransactionResponse, IdParams, UpdateTransactionRequest>) => {
-  context.body = await transactionService.updateById(context.params.id, context.request.body);
+  context.body = await transactionService.updateById(
+    context.params.id,
+    {
+      ...context.request.body,
+      userId: context.state.session.userId,
+    },
+  );
 };
 updateTransactionById.validationScheme = {
   params: { id: Joi.number().integer().positive() },
@@ -56,12 +73,12 @@ updateTransactionById.validationScheme = {
     amount: Joi.number().invalid(0),
     date: Joi.date().iso().less('now'),
     placeId: Joi.number().integer().positive(),
-    userId: Joi.number().integer().positive(),
+    //userId: Joi.number().integer().positive(),
   },
 };
 
 const deleteTransactionById = async (context: KoaContext<void, IdParams>) => {
-  await transactionService.deleteById(context.params.id);
+  await transactionService.deleteById(context.params.id,context.state.session.userId);
   context.status = 204;
 };
 deleteTransactionById.validationScheme = {
@@ -74,6 +91,8 @@ export default (parent: KoaRouter) => {
   const router = new Router<BudgetAppState, BudgetAppContext>({
     prefix: '/transactions',
   });
+
+  router.use(requireAuthentication);
 
   router.get('/', validate(getAllTransactions.validationScheme), getAllTransactions);
   router.get('/:id', validate(getTransactionById.validationScheme), getTransactionById);
