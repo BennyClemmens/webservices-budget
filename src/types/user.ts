@@ -21,7 +21,7 @@ export interface PublicUser extends Pick<User, 'id' | 'name' | 'surname' | 'emai
 export interface UserUpdateInput extends Omit<UserCreateInput, 'password'> {}
 
 //rest
-export interface GetUserRequest {
+export interface GetUserRequest { // of IDParams + 'me'
   id: number | 'me';
 }
 

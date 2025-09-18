@@ -11,7 +11,9 @@ const login = async (ctx: KoaContext<LoginResponse, void, LoginRequest>) => {
   const token = await userService.login(email, password);
 
   ctx.status = 200;
-  ctx.body = { token };
+  ctx.body = {
+    token, // object with the token key
+  };
 };
 login.validationScheme = {
   body: {

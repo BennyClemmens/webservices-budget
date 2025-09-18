@@ -1,3 +1,5 @@
+//also possible: a unit test ...
+
 process.env.NODE_CONFIG = JSON.stringify({
   env: 'development',
 });

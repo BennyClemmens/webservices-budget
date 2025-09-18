@@ -11,7 +11,7 @@ export const requireAuthentication = async (ctx: KoaContext, next: Next) => {
   const { authorization } = ctx.headers;
 
   ctx.state.session = await userService.checkAndParseSession(authorization);
-
+  // je zou ook de gebruiker kunnen ophalen en in de session steken hier ...
   return next();
 };
 

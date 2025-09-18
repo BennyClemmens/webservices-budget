@@ -85,6 +85,7 @@ registerUser.validationScheme = {
   },
 };
 
+// TODO: ook hier me, Admin, ....
 const updateUserById = async (ctx: KoaContext<UpdateUserResponse, IdParams, UpdateUserRequest>) => {
   const user = await userService.updateById(ctx.params.id, ctx.request.body!);
   ctx.body = user;
@@ -115,7 +116,7 @@ export default (parent: KoaRouter) => {
     prefix: '/users',
   });
 
-  const requireAdmin = makeRequireRole(Role.ADMIN);
+  const requireAdmin = makeRequireRole(Role.ADMIN);  // of define and export in auth?
 
   router.get('/', requireAuthentication, requireAdmin, validate(getAllUsers.validationScheme), getAllUsers);
   router.get(

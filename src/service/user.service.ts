@@ -47,6 +47,7 @@ export const checkAndParseSession = async (
       );
     } else {
       throw ServiceError.unauthorized(error.message);
+      // internal service error zou hier ook kunnen want we weten niet zeker dat ...
     }
   }
 };
@@ -58,6 +59,7 @@ export const checkRole = (role: string, roles: string[]): void => {
     throw ServiceError.forbidden(
       'You are not allowed to view this part of the application',
     );
+    // of 404 om niet aan te geven dat je dit url kent ...
   }
 };
 
@@ -81,12 +83,12 @@ export const login = async (
     );
   }
 
-  return await generateJWT(user);
+  return await generateJWT(user);  // the token
 };
 
 export const getAll = async (): Promise<PublicUser[]> => {
   const privateUsers =  await prisma.user.findMany();
-  return privateUsers.map(makeExposedUser);
+  return privateUsers.map(makeExposedUser);  // een select was ook mogelijk
 
 };
 
